@@ -21,7 +21,7 @@ import org.opengis.filter.Filter;
 
 /**
  * Lecture d'un fichier d'arc correspondant au modèle ROUTE500 de l'IGN
- * 
+ *
  * @author MBorne
  *
  */
@@ -33,7 +33,7 @@ public class GraphReader {
 
 	/**
 	 * Lecture du fichier shapefile
-	 * 
+	 *
 	 * @param file
 	 * @return
 	 */
@@ -71,7 +71,7 @@ public class GraphReader {
 	/**
 	 * Création des arcs direct et inverse pour une feature correspondant à un
 	 * tronçon de route.
-	 * 
+	 *
 	 * @param graph
 	 * @param feature
 	 */
@@ -90,19 +90,18 @@ public class GraphReader {
 
 		/* Création de l'arc pour le parcours en sens direct */
 		if (sens.equals(DOUBLE_SENS) || sens.equals(SENS_DIRECT)) {
-			Edge directEdge = graph.createEdge(source, target, id + "-direct");
+			Edge directEdge = graph.createEdge(source,target,id + "-direct");
 			directEdge.setGeometry(geometry);
 		}
 		if (sens.equals(DOUBLE_SENS) || sens.equals(SENS_INVERSE)) {
 			/* Création de l'arc pour le parcours en sens opposé */
-			Edge reverseEdge = graph.createEdge(target, source, id + "-reverse");
-			reverseEdge.setGeometry(geometry);
+			graph.createEdge(target,source,id + "-reverse");
 		}
 	}
 
 	/**
 	 * Récupération de la géométrie de l'arc à partir de la feature
-	 * 
+	 *
 	 * @param feature
 	 * @return
 	 */

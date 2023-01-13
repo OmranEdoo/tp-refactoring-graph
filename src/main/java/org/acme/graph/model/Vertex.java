@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  * Un sommet dans un graphe
- * 
+ *
  * @author MBorne
  *
  */
@@ -37,16 +37,14 @@ public class Vertex {
 	 * dijkstra - indique si le sommet est visité
 	 */
 	private boolean visited;
-
 	@JsonIgnore
-	private List<Edge> inEdges;
-
+	public List<Edge> inEdges = new ArrayList<>();
 	@JsonIgnore
-	private List<Edge> outEdges;
+	public List<Edge> outEdges = new ArrayList<>();
 
-	Vertex() {
-		this.inEdges = new ArrayList<>();
-		this.outEdges = new ArrayList<>();
+
+	public Vertex() {
+
 	}
 
 	public String getId() {
@@ -70,6 +68,11 @@ public class Vertex {
 		return cost;
 	}
 
+	public List<Edge> getInEdges(){ return inEdges;}
+
+	public List<Edge> getOutEdges(){ return outEdges;}
+
+
 	public void setCost(double cost) {
 		this.cost = cost;
 	}
@@ -90,10 +93,6 @@ public class Vertex {
 	public void setVisited(boolean visited) {
 		this.visited = visited;
 	}
-
-	public List<Edge> getInEdges() { return this.inEdges; }
-
-	public List<Edge> getOutEdges() { return this.outEdges; }
 
 	@Override
 	public String toString() {

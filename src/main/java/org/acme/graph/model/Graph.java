@@ -8,9 +8,9 @@ import org.acme.graph.errors.NotFoundException;
 import org.locationtech.jts.geom.Coordinate;
 
 /**
- * 
+ *
  * Un graphe matérialisé par une liste de sommets et d'arcs
- * 
+ *
  * @author MBorne
  *
  */
@@ -27,7 +27,7 @@ public class Graph {
 
 	/**
 	 * Récupération de la liste sommets
-	 * 
+	 *
 	 * @return
 	 */
 	public Collection<Vertex> getVertices() {
@@ -36,7 +36,7 @@ public class Graph {
 
 	/**
 	 * Récupération de la liste arcs
-	 * 
+	 *
 	 * @return
 	 */
 	public void setVertices(List<Vertex> vertices) {
@@ -45,7 +45,7 @@ public class Graph {
 
 	/**
 	 * Recherche d'un sommet par identifiant
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -60,7 +60,7 @@ public class Graph {
 
 	/**
 	 * Recherche d'un sommet par égalité stricte de coordonnées
-	 * 
+	 *
 	 * @param coordinate
 	 * @return
 	 */
@@ -76,7 +76,7 @@ public class Graph {
 
 	/**
 	 * Récupération ou création d'un sommet en assurant l'unicité
-	 * 
+	 *
 	 * @param graph
 	 * @param coordinate
 	 * @return
@@ -87,23 +87,26 @@ public class Graph {
 			vertex = findVertex(coordinate);
 		} catch (NotFoundException e) {
 			/* création d'un nouveau sommet car non trouvé */
-			vertex = this.createVertex(coordinate, Integer.toString(getVertices().size()));
+			vertex = new Vertex();
+			vertex.setId(Integer.toString(getVertices().size()));
+			vertex.setCoordinate(coordinate);
+			vertices.add(vertex);
 		}
 		return vertex;
 	}
 
 	/**
 	 * Récupération de la liste des arcs
-	 * 
+	 *
 	 * @return
 	 */
 	public Collection<Edge> getEdges() {
-		return this.edges;
+		return edges;
 	}
 
 	/**
 	 * Recherche des arcs sortant d'un sommet
-	 * 
+	 *
 	 * @param vertex
 	 * @return
 	 */
@@ -113,7 +116,7 @@ public class Graph {
 
 	/**
 	 * Recherche des arcs sortant d'un sommet
-	 * 
+	 *
 	 * @param vertex
 	 * @return
 	 */
@@ -123,25 +126,23 @@ public class Graph {
 
 	/**
 	 * Définition de la liste des arcs
-	 * 
+	 *
 	 * @param edges
 	 */
 	public void setEdges(List<Edge> edges) {
 		this.edges = edges;
 	}
-
-	public Vertex createVertex(Coordinate coordinate, String id) {
+	public Vertex createVertex(Coordinate coordinate, String id){
 		Vertex vertex = new Vertex();
 		vertex.setId(id);
 		vertex.setCoordinate(coordinate);
-		this.getVertices().add(vertex);
+		this.vertices.add(vertex);
 		return vertex;
 	}
-
-	public Edge createEdge(Vertex source, Vertex target, String id) {
+	public Edge createEdge(Vertex source, Vertex target, String id){
 		Edge edge = new Edge(source, target);
 		edge.setId(id);
-		this.getEdges().add(edge);
+		this.edges.add(edge);
 		return edge;
 	}
 

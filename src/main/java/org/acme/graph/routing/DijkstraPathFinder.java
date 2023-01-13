@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.acme.graph.errors.NotFoundException;
 import org.acme.graph.model.Edge;
 import org.acme.graph.model.Graph;
+import org.acme.graph.model.Path;
 import org.acme.graph.model.Vertex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * 
+ *
  * Utilitaire pour le calcul du plus court chemin dans un graphe
- * 
+ *
  * @author MBorne
  *
  */
@@ -29,12 +31,12 @@ public class DijkstraPathFinder {
 
 	/**
 	 * Calcul du plus court chemin entre une origine et une destination
-	 * 
+	 *
 	 * @param origin
 	 * @param destination
 	 * @return
 	 */
-	public List<Edge> findPath(Vertex origin, Vertex destination) {
+	public Path findPath(Vertex origin, Vertex destination) {
 		log.info("findPath({},{})...", origin, destination);
 		initGraph(origin);
 		Vertex current;
@@ -42,16 +44,16 @@ public class DijkstraPathFinder {
 			visit(current);
 			if (destination.getReachingEdge() != null) {
 				log.info("findPath({},{}) : path found", origin, destination);
-				return buildPath(destination);
+				return new Path(buildPath(destination));
 			}
 		}
-		log.info("findPath({},{}) : path not found", origin, destination);
-		return null;
+		log.info("findPath({},{}) : Path not found from '%s' to '%s'", origin, destination);
+		throw new NotFoundException(String.format("Path not found from '%s' to '%s'", origin, destination));
 	}
 
 	/**
 	 * Parcourt les arcs sortants pour atteindre les sommets avec le meilleur coût
-	 * 
+	 *
 	 * @param vertex
 	 */
 	private void visit(Vertex vertex) {
@@ -81,7 +83,7 @@ public class DijkstraPathFinder {
 
 	/**
 	 * Construit le chemin en remontant les relations incoming edge
-	 * 
+	 *
 	 * @param target
 	 * @return
 	 */
@@ -100,7 +102,7 @@ public class DijkstraPathFinder {
 
 	/**
 	 * Prépare le graphe pour le calcul du plus court chemin
-	 * 
+	 *
 	 * @param source
 	 */
 	private void initGraph(Vertex source) {
@@ -116,7 +118,7 @@ public class DijkstraPathFinder {
 	 * Recherche le prochain sommet à visiter. Dans l'algorithme de Dijkstra, ce
 	 * sommet est le sommet non visité le plus proche de l'origine du calcul de plus
 	 * court chemin.
-	 * 
+	 *
 	 * @return
 	 */
 	private Vertex findNextVertex() {

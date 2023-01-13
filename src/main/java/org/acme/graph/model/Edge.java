@@ -10,8 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import javax.sound.sampled.Line;
-
 /**
  *
  * Un arc matérialisé par un sommet source et un sommet cible
@@ -20,7 +18,6 @@ import javax.sound.sampled.Line;
  *
  */
 public class Edge {
-
 	/**
 	 * Identifiant de l'arc
 	 */
@@ -35,15 +32,16 @@ public class Edge {
 	 * Sommet final
 	 */
 	private Vertex target;
-
 	private LineString geometry;
 
 	Edge(Vertex source, Vertex target) {
+		assert source != null;
+		assert target != null;
+
 		this.source = source;
 		this.target = target;
-
-		this.source.getOutEdges().add(this);
-		this.target.getInEdges().add(this);
+		this.target.inEdges.add(this);
+		this.source.outEdges.add(this);
 	}
 
 	public String getId() {
@@ -56,7 +54,7 @@ public class Edge {
 
 	/**
 	 * Source avec rendu JSON sous forme d'identifiant
-	 * 
+	 *
 	 * @return
 	 */
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -67,7 +65,7 @@ public class Edge {
 
 	/**
 	 * Cible avec rendu JSON sous forme d'identifiant
-	 * 
+	 *
 	 * @return
 	 */
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -76,22 +74,34 @@ public class Edge {
 		return target;
 	}
 
-	public void setGeometry(LineString geometry) { this.geometry = geometry; }
 
 	/**
 	 * dijkstra - coût de parcours de l'arc (distance géométrique)
-	 * 
+	 *
 	 * @return
 	 */
 	public double getCost() {
+		if (this.geometry != null)
+			return this.geometry.getLength();
+
 		return this.getGeometry().getLength();
+	}
+
+
+
+	@Override
+	public String toString() {
+		return id + " (" + source + "->" + target + ")";
+	}
+
+	public void setGeometry(LineString geometry){
+		this.geometry = geometry;
 	}
 
 	@JsonSerialize(using = GeometrySerializer.class)
 	public LineString getGeometry() {
-		if (geometry != null) {
+		if (this.geometry != null)
 			return this.geometry;
-		}
 
 		GeometryFactory gf = new GeometryFactory();
 		return gf.createLineString(new Coordinate[] {
@@ -99,10 +109,4 @@ public class Edge {
 				target.getCoordinate()
 		});
 	}
-
-	@Override
-	public String toString() {
-		return id + " (" + source + "->" + target + ")";
-	}
-
 }
